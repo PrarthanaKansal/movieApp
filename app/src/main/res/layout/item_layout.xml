@@ -20,7 +20,8 @@
         android:textSize="15sp"
         android:padding="10dp"
         android:textColor="#fff"
-        android:background="#45121111"/>
+        android:background="#45121111"
+        android:transitionName="textTransition"/>
 
 
 

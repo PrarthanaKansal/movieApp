@@ -1,11 +1,18 @@
 package com.example.prekshasingla.moviesapp;
 
+import android.animation.Animator;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
     MovieRecyclerAdapter movieRecyclerAdapter;
     MovieRecyclerAdapter bollywoodMovieRecyclerAdapter;
 
+    TextView show;
+    ImageView arrow;
+
+    private boolean showHideFlag=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +49,21 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView2 = findViewById(R.id.recyclerView2);
+
+        show = findViewById(R.id.show);
+        arrow = findViewById(R.id.arrow);
+
+        show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(showHideFlag){
+                    fadeHide();
+                }
+                else{
+                    fadeShow();
+                }
+            }
+        });
 
         movieRecyclerAdapter = new MovieRecyclerAdapter(this,movieArrayList);
         bollywoodMovieRecyclerAdapter = new MovieRecyclerAdapter(this,BollywoodMovieArrayList);
@@ -47,9 +74,92 @@ public class MainActivity extends AppCompatActivity {
         recyclerView2.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         recyclerView2.setAdapter(bollywoodMovieRecyclerAdapter);
 
+        recyclerView2.setVisibility(View.GONE);
+
+
         getBollyData();
 
         getMovieData();
+    }
+
+    private void fadeHide() {
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.rotationhide);
+        arrow.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                arrow.setRotation(0);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        recyclerView2.animate().alpha(0f).setDuration(2000).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                recyclerView2.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        showHideFlag=false;
+        show.setText("Show");
+    }
+
+    private void fadeShow() {
+//        AnimationDrawable drawable = (AnimationDrawable) arrow.getBackground();
+//        drawable.start();
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.rotation);
+        arrow.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                arrow.setRotation(180);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        recyclerView2.setAlpha(0f);
+        recyclerView2.setVisibility(View.VISIBLE);
+
+        recyclerView2.animate()
+                .alpha(1f)
+                .setDuration(2000)
+        .setListener(null);
+        show.setText("Hide");
+        showHideFlag=true;
     }
 
     private void getBollyData() {

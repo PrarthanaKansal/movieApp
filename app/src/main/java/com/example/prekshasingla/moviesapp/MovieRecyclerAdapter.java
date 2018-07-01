@@ -1,9 +1,14 @@
 package com.example.prekshasingla.moviesapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Movie;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,8 +82,19 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
             intent.putExtra("title", Movie.getTitle());
             intent.putExtra("image",Movie.getPosterPath());
             intent.putExtra("overview",Movie.getOverview());
+            intent.putExtra("id",Movie.getId());
 
-            context.startActivity(intent);
+            if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+                        view.findViewById(R.id.title),"textTransition");
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(context,android.R.anim.fade_in,android.R.anim.fade_out).toBundle();
+                context.startActivity(intent,activityOptionsCompat.toBundle());
+            }
+            else{
+                context.startActivity(intent);
+            }
+
+
 
         }
     }
